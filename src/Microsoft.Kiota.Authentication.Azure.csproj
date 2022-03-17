@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Description>Kiota authentication provider implementation with Azure Identity.</Description>
     <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
-    <AssemblyTitle>Kiota Abstractions Library for dotnet</AssemblyTitle>
+    <AssemblyTitle>Kiota Azure Identity Authentication Library for dotnet</AssemblyTitle>
     <Authors>Microsoft</Authors>
     <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
