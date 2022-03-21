@@ -11,7 +11,7 @@ Read more about Kiota [here](https://github.com/microsoft/kiota/blob/main/README
 ## Using Azure Identity authentication provider library for dotnet
 
 ```shell
-dotnet add package Microsoft.Kiota.Authentication.Azure
+dotnet add package Microsoft.Kiota.Authentication.Azure --prerelease
 ```
 
 ## Debugging
