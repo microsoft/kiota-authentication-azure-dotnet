@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## [1.0.0-preview.2] - 2022-04-12
+
+### Changed
+
+- Breaking: Changes target runtime to netstandard2.0
+
 ## [1.0.0-preview.1] - 2022-03-18
 
 ### Added
