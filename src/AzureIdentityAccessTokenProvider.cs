@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Core;
@@ -56,11 +57,15 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider
         if(!uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("Only https is supported");
 
-        var claims = additionalAuthenticationContext is not null &&
+        string decodedClaim = null;
+        if (additionalAuthenticationContext is not null &&
                     additionalAuthenticationContext.ContainsKey(ClaimsKey) &&
-                    additionalAuthenticationContext[ClaimsKey] is string claimsValue ? claimsValue : null;
+                    additionalAuthenticationContext[ClaimsKey] is string claims) {
+            var decodedBase64Bytes = Convert.FromBase64String(claims);
+            decodedClaim = Encoding.UTF8.GetString(decodedBase64Bytes);
+        }
 
-        var result = await this._credential.GetTokenAsync(new TokenRequestContext(_scopes.ToArray(), claims: claims), cancellationToken); //TODO: we might have to bubble that up for native apps or backend web apps to avoid blocking the UI/getting an exception
+        var result = await this._credential.GetTokenAsync(new TokenRequestContext(_scopes.ToArray(), claims: decodedClaim), cancellationToken); //TODO: we might have to bubble that up for native apps or backend web apps to avoid blocking the UI/getting an exception
         return result.Token;
     }
 
