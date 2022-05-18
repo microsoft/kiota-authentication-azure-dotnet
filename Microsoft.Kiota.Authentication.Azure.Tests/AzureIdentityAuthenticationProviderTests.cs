@@ -85,4 +85,25 @@ public class AzureIdentityAuthenticationProviderTests
         var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await azureIdentityAuthenticationProvider.GetAuthorizationTokenAsync(new Uri(nonHttpsUrl)));
         Assert.Equal("Only https is supported", exception.Message);
     }
+    [Fact]
+    public async Task AddsClaimsToTheTokenContext()
+    {
+        var mockTokenCredential = new Mock<TokenCredential>();
+        mockTokenCredential.Setup(credential => credential.GetTokenAsync(It.IsAny<TokenRequestContext>(), It.IsAny<CancellationToken>()))
+                            .Returns<TokenRequestContext, CancellationToken>((context, cToken) => {
+            Assert.NotNull(context.Claims);
+            return ValueTask.FromResult(new AccessToken(string.Empty, DateTimeOffset.Now));
+        });
+        var azureIdentityAuthenticationProvider = new AzureIdentityAuthenticationProvider(mockTokenCredential.Object, null ,"User.Read");
+        var testRequest = new RequestInformation()
+        {
+            HttpMethod = Method.GET,
+            URI = new Uri("https://graph.microsoft.com/v1.0/me")
+        };
+        Assert.Empty(testRequest.Headers); // header collection is empty
+
+        // Act
+        await azureIdentityAuthenticationProvider.AuthenticateRequestAsync(testRequest, new() { {"claims", "eyJhY2Nlc3NfdG9rZW4iOnsibmJmIjp7ImVzc2VudGlhbCI6dHJ1ZSwgInZhbHVlIjoiMTY1MjgxMzUwOCJ9fX0="}});
+        mockTokenCredential.Verify(x => x.GetTokenAsync(It.IsAny<TokenRequestContext>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
 }

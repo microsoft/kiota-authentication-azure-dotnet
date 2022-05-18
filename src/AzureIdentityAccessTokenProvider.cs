@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Core;
@@ -45,13 +46,10 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider
             _scopes.Add("https://graph.microsoft.com/.default"); //TODO: init from the request hostname instead so it doesn't block national clouds?
     }
 
-    /// <summary>
-    /// Gets the authorization token for the given target URI.
-    /// </summary>
-    /// <param name="uri">The target <see cref="Uri"/> to get token for</param>
-    /// <param name="cancellationToken">The <see cref="CancellationToken"/> of the task</param>
-    /// <returns>An authorization token string.</returns>
-    public async Task<string> GetAuthorizationTokenAsync(Uri uri, CancellationToken cancellationToken = default)
+    private const string ClaimsKey = "claims";
+
+    /// <inheritdoc/>
+    public async Task<string> GetAuthorizationTokenAsync(Uri uri, Dictionary<string, object> additionalAuthenticationContext = default, CancellationToken cancellationToken = default)
     {
         if(!AllowedHostsValidator.IsUrlHostValid(uri))
             return string.Empty;
@@ -59,7 +57,15 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider
         if(!uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("Only https is supported");
 
-        var result = await this._credential.GetTokenAsync(new TokenRequestContext(_scopes.ToArray()), cancellationToken); //TODO: we might have to bubble that up for native apps or backend web apps to avoid blocking the UI/getting an exception
+        string decodedClaim = null;
+        if (additionalAuthenticationContext is not null &&
+                    additionalAuthenticationContext.ContainsKey(ClaimsKey) &&
+                    additionalAuthenticationContext[ClaimsKey] is string claims) {
+            var decodedBase64Bytes = Convert.FromBase64String(claims);
+            decodedClaim = Encoding.UTF8.GetString(decodedBase64Bytes);
+        }
+
+        var result = await this._credential.GetTokenAsync(new TokenRequestContext(_scopes.ToArray(), claims: decodedClaim), cancellationToken); //TODO: we might have to bubble that up for native apps or backend web apps to avoid blocking the UI/getting an exception
         return result.Token;
     }
 
