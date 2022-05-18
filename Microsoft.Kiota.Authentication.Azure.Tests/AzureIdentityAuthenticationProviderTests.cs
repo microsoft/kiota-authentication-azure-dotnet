@@ -103,7 +103,7 @@ public class AzureIdentityAuthenticationProviderTests
         Assert.Empty(testRequest.Headers); // header collection is empty
 
         // Act
-        await azureIdentityAuthenticationProvider.AuthenticateRequestAsync(testRequest, new() { {"claims", "some claim"}});
+        await azureIdentityAuthenticationProvider.AuthenticateRequestAsync(testRequest, new() { {"claims", "eyJhY2Nlc3NfdG9rZW4iOnsibmJmIjp7ImVzc2VudGlhbCI6dHJ1ZSwgInZhbHVlIjoiMTY1MjgxMzUwOCJ9fX0="}});
         mockTokenCredential.Verify(x => x.GetTokenAsync(It.IsAny<TokenRequestContext>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }
