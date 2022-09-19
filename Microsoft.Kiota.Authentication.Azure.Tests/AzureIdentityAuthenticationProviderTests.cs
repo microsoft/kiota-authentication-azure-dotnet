@@ -47,7 +47,7 @@ public class AzureIdentityAuthenticationProviderTests
         // Arrange
         var mockTokenCredential = new Mock<TokenCredential>();
         mockTokenCredential.Setup(credential => credential.GetTokenAsync(It.IsAny<TokenRequestContext>(), It.IsAny<CancellationToken>())).Returns(ValueTask.FromResult(new AccessToken(expectedToken, DateTimeOffset.Now)));
-        var azureIdentityAuthenticationProvider = new AzureIdentityAuthenticationProvider(mockTokenCredential.Object, null ,"User.Read");
+        var azureIdentityAuthenticationProvider = new AzureIdentityAuthenticationProvider(mockTokenCredential.Object, scopes: "User.Read");
         var testRequest = new RequestInformation()
         {
             HttpMethod = Method.GET,
@@ -77,7 +77,7 @@ public class AzureIdentityAuthenticationProviderTests
         // Arrange
         var mockTokenCredential = new Mock<TokenCredential>();
         mockTokenCredential.Setup(credential => credential.GetTokenAsync(It.IsAny<TokenRequestContext>(), It.IsAny<CancellationToken>())).Returns(ValueTask.FromResult(new AccessToken(string.Empty, DateTimeOffset.Now)));
-        var azureIdentityAuthenticationProvider = new AzureIdentityAccessTokenProvider(mockTokenCredential.Object, null);
+        var azureIdentityAuthenticationProvider = new AzureIdentityAccessTokenProvider(mockTokenCredential.Object);
 
         var nonHttpsUrl = "http://graph.microsoft.com";
 
@@ -94,7 +94,7 @@ public class AzureIdentityAuthenticationProviderTests
             Assert.NotNull(context.Claims);
             return ValueTask.FromResult(new AccessToken(string.Empty, DateTimeOffset.Now));
         });
-        var azureIdentityAuthenticationProvider = new AzureIdentityAuthenticationProvider(mockTokenCredential.Object, null ,"User.Read");
+        var azureIdentityAuthenticationProvider = new AzureIdentityAuthenticationProvider(mockTokenCredential.Object, scopes: "User.Read");
         var testRequest = new RequestInformation()
         {
             HttpMethod = Method.GET,

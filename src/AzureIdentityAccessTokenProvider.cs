@@ -32,7 +32,7 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
     /// <param name="allowedHosts">The list of allowed hosts for which to request access tokens.</param>
     /// <param name="scopes">The scopes to request the access token for.</param>
     /// <param name="observabilityOptions">The observability options to use for the authentication provider.</param>
-    public AzureIdentityAccessTokenProvider(TokenCredential credential, string [] allowedHosts, ObservabilityOptions observabilityOptions = null, params string[] scopes)
+    public AzureIdentityAccessTokenProvider(TokenCredential credential, string [] allowedHosts = null, ObservabilityOptions observabilityOptions = null, params string[] scopes)
     {
         _credential = credential ?? throw new ArgumentNullException(nameof(credential));
 
