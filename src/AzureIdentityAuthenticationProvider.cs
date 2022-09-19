@@ -17,7 +17,8 @@ public class AzureIdentityAuthenticationProvider : BaseBearerTokenAuthentication
     /// <param name="credential">The credential implementation to use to obtain the access token.</param>
     /// <param name="allowedHosts">The list of allowed hosts for which to request access tokens.</param>
     /// <param name="scopes">The scopes to request the access token for.</param>
-    public AzureIdentityAuthenticationProvider(TokenCredential credential, string[] allowedHosts, params string[] scopes) : base(new AzureIdentityAccessTokenProvider(credential, allowedHosts, scopes))
+    /// <param name="observabilityOptions">The observability options to use for the authentication provider.</param>
+    public AzureIdentityAuthenticationProvider(TokenCredential credential, string[] allowedHosts, ObservabilityOptions observabilityOptions = null, params string[] scopes) : base(new AzureIdentityAccessTokenProvider(credential, allowedHosts, observabilityOptions, scopes))
     {
     }
 }
