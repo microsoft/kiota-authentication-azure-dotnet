@@ -67,7 +67,7 @@ public class AzureIdentityAuthenticationProviderTests
         {
             Assert.NotEmpty(testRequest.Headers); // header collection is no longer empty
             Assert.Equal("Authorization", testRequest.Headers.First().Key); // First element is Auth header
-            Assert.Equal($"Bearer {expectedToken}", testRequest.Headers.First().Value); // First element is Auth header
+            Assert.Equal($"Bearer {expectedToken}", testRequest.Headers["Authorization"].First()); // First element is Auth header
         }
     }
 
