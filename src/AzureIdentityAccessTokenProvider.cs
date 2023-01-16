@@ -21,7 +21,7 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
     private readonly TokenCredential _credential;
     private readonly ObservabilityOptions _obsOptions;
     private readonly ActivitySource _activitySource;
-    private readonly List<string> _scopes;
+    private readonly HashSet<string> _scopes;
     /// <inheritdoc />
     public AllowedHostsValidator AllowedHostsValidator { get; private set; }
 
@@ -36,18 +36,12 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
     {
         _credential = credential ?? throw new ArgumentNullException(nameof(credential));
 
-        if(!allowedHosts?.Any() ?? true)
-            AllowedHostsValidator = new AllowedHostsValidator(new string[] { "graph.microsoft.com", "graph.microsoft.us", "dod-graph.microsoft.us", "graph.microsoft.de", "microsoftgraph.chinacloudapi.cn", "canary.graph.microsoft.com" });
-        else
-            AllowedHostsValidator = new AllowedHostsValidator(allowedHosts);
+        AllowedHostsValidator = new AllowedHostsValidator(allowedHosts);
 
         if(scopes == null)
             _scopes = new();
         else
-            _scopes = scopes.ToList();
-
-        if(!_scopes.Any())
-            _scopes.Add("https://graph.microsoft.com/.default"); //TODO: init from the request hostname instead so it doesn't block national clouds?
+            _scopes = new(scopes, StringComparer.OrdinalIgnoreCase);
 
         _obsOptions = observabilityOptions ?? new();
         _activitySource = new(_obsOptions.TracerInstrumentationName);
@@ -81,8 +75,10 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
         } else
             span?.SetTag("com.microsoft.kiota.authentication.additional_claims_provided", false);
 
+        if(!_scopes.Any())
+            _scopes.Add($"{uri.Scheme}://{uri.Host}/.default");
         span?.SetTag("com.microsoft.kiota.authentication.scopes", string.Join(",", _scopes));
-        var result = await this._credential.GetTokenAsync(new TokenRequestContext(_scopes.ToArray(), claims: decodedClaim), cancellationToken); //TODO: we might have to bubble that up for native apps or backend web apps to avoid blocking the UI/getting an exception
+        var result = await this._credential.GetTokenAsync(new TokenRequestContext(_scopes.ToArray(), claims: decodedClaim), cancellationToken);
         return result.Token;
     }
     /// <inheritdoc/>
