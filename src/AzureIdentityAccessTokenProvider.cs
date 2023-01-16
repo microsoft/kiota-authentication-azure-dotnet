@@ -19,7 +19,6 @@ namespace Microsoft.Kiota.Authentication.Azure;
 public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposable
 {
     private readonly TokenCredential _credential;
-    private readonly ObservabilityOptions _obsOptions;
     private readonly ActivitySource _activitySource;
     private readonly HashSet<string> _scopes;
     /// <inheritdoc />
@@ -43,8 +42,7 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
         else
             _scopes = new(scopes, StringComparer.OrdinalIgnoreCase);
 
-        _obsOptions = observabilityOptions ?? new();
-        _activitySource = new(_obsOptions.TracerInstrumentationName);
+        _activitySource = new((observabilityOptions ?? new()).TracerInstrumentationName);
     }
 
     private const string ClaimsKey = "claims";
