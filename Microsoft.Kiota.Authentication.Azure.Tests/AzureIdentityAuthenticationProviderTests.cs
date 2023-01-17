@@ -27,15 +27,18 @@ public class AzureIdentityAuthenticationProviderTests
     public async Task GetAuthorizationTokenAsyncGetsToken(string url, string expectedToken)
     {
         // Arrange
+        var uri = new Uri(url);
         var mockTokenCredential = new Mock<TokenCredential>();
         mockTokenCredential.Setup(credential => credential.GetTokenAsync(It.IsAny<TokenRequestContext>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<AccessToken>(new AccessToken(expectedToken, DateTimeOffset.Now)));
-        var azureIdentityAuthenticationProvider = new AzureIdentityAccessTokenProvider(mockTokenCredential.Object, null);
+        var azureIdentityAuthenticationProvider = new AzureIdentityAccessTokenProvider(mockTokenCredential.Object);
 
         // Act
-        var token = await azureIdentityAuthenticationProvider.GetAuthorizationTokenAsync(new Uri(url));
+        var token = await azureIdentityAuthenticationProvider.GetAuthorizationTokenAsync(uri);
 
         // Assert
         Assert.Equal(expectedToken, token);
+        mockTokenCredential.Verify(x => x.GetTokenAsync(It.Is<TokenRequestContext>(t =>
+                                                                            t.Scopes.Any(s => $"{uri.Scheme}://{uri.Host}/.default".Equals(s, StringComparison.OrdinalIgnoreCase))), It.IsAny<CancellationToken>()));
     }
 
     [Theory]
