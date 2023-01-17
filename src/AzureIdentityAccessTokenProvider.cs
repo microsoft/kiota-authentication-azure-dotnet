@@ -22,7 +22,7 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
     private readonly ActivitySource _activitySource;
     private readonly HashSet<string> _scopes;
     /// <inheritdoc />
-    public AllowedHostsValidator AllowedHostsValidator { get; private set; }
+    public AllowedHostsValidator AllowedHostsValidator { get; protected set; }
 
     /// <summary>
     /// The <see cref="AzureIdentityAccessTokenProvider"/> constructor
