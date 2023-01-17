@@ -22,7 +22,7 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
     private readonly ActivitySource _activitySource;
     private readonly HashSet<string> _scopes;
     /// <inheritdoc />
-    public AllowedHostsValidator AllowedHostsValidator { get; private set; }
+    public AllowedHostsValidator AllowedHostsValidator { get; protected set; }
 
     /// <summary>
     /// The <see cref="AzureIdentityAccessTokenProvider"/> constructor
@@ -31,7 +31,7 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
     /// <param name="allowedHosts">The list of allowed hosts for which to request access tokens.</param>
     /// <param name="scopes">The scopes to request the access token for.</param>
     /// <param name="observabilityOptions">The observability options to use for the authentication provider.</param>
-    public AzureIdentityAccessTokenProvider(TokenCredential credential, string [] allowedHosts = null, ObservabilityOptions observabilityOptions = null, params string[] scopes)
+    public AzureIdentityAccessTokenProvider(TokenCredential credential, string []? allowedHosts = null, ObservabilityOptions? observabilityOptions = null, params string[] scopes)
     {
         _credential = credential ?? throw new ArgumentNullException(nameof(credential));
 
@@ -48,7 +48,7 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
     private const string ClaimsKey = "claims";
 
     /// <inheritdoc/>
-    public async Task<string> GetAuthorizationTokenAsync(Uri uri, Dictionary<string, object> additionalAuthenticationContext = default, CancellationToken cancellationToken = default)
+    public async Task<string> GetAuthorizationTokenAsync(Uri uri, Dictionary<string, object>? additionalAuthenticationContext = default, CancellationToken cancellationToken = default)
     {
         using var span = _activitySource?.StartActivity(nameof(GetAuthorizationTokenAsync));
         if(!AllowedHostsValidator.IsUrlHostValid(uri)) {
@@ -63,7 +63,7 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
 
         span?.SetTag("com.microsoft.kiota.authentication.is_url_valid", true);
 
-        string decodedClaim = null;
+        string? decodedClaim = null;
         if (additionalAuthenticationContext is not null &&
                     additionalAuthenticationContext.ContainsKey(ClaimsKey) &&
                     additionalAuthenticationContext[ClaimsKey] is string claims) {
