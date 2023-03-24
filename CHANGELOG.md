@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+## [1.0.2] - 2023-03-24
+
+### Changed
+
+- Update minimum version of [`Azure.Core`]([https://www.nuget.org/packages/System.Diagnostics.DiagnosticSource](https://www.nuget.org/packages/Azure.Core)) to `1.3.0` to fix Azure.Blob storage issues. https://github.com/Azure/azure-sdk-for-net/issues/35010
+
 ### Changed
 
 ## [1.0.1] - 2023-03-10
