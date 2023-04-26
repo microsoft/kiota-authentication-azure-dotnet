@@ -14,7 +14,7 @@ using Microsoft.Kiota.Abstractions.Authentication;
 
 namespace Microsoft.Kiota.Authentication.Azure;
 /// <summary>
-/// Provides an implementation of <see cref="IAuthenticationProvider"/> for Azure.Identity.
+/// Provides an implementation of <see cref="IAccessTokenProvider"/> for Azure.Identity.
 /// </summary>
 public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposable
 {
