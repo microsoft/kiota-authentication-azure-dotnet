@@ -9,6 +9,7 @@
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageIconUrl>http://go.microsoft.com/fwlink/?LinkID=288890</PackageIconUrl>
     <RepositoryUrl>https://github.com/microsoft/kiota-authentication-azure-dotnet</RepositoryUrl>
     <PackageProjectUrl>https://microsoft.github.io/kiota/</PackageProjectUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -26,7 +27,7 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PackageReleaseNotes>
-        https://github.com/microsoft/kiota-authentication-azure-dotnet/releases
+      https://github.com/microsoft/kiota-authentication-azure-dotnet/releases
     </PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
