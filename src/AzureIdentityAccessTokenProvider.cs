@@ -60,7 +60,6 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
             span?.SetTag("com.microsoft.kiota.authentication.is_url_valid", false);
             throw new ArgumentException("Only https is supported");
         }
-
         span?.SetTag("com.microsoft.kiota.authentication.is_url_valid", true);
 
         string? decodedClaim = null;
@@ -73,12 +72,17 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
         } else
             span?.SetTag("com.microsoft.kiota.authentication.additional_claims_provided", false);
 
-        if(!_scopes.Any())
-            _scopes.Add($"{uri.Scheme}://{uri.Host}/.default");
-        span?.SetTag("com.microsoft.kiota.authentication.scopes", string.Join(",", _scopes));
-        var result = await this._credential.GetTokenAsync(new TokenRequestContext(_scopes.ToArray(), claims: decodedClaim), cancellationToken);
+        string[] scopes;
+        if (_scopes.Any()) {
+            scopes = _scopes.ToArray();
+        } else
+            scopes = new string[] { $"{uri.Scheme}://{uri.Host}/.default" };
+        span?.SetTag("com.microsoft.kiota.authentication.scopes", string.Join(",", scopes));
+
+        var result = await this._credential.GetTokenAsync(new TokenRequestContext(scopes, claims: decodedClaim), cancellationToken);
         return result.Token;
     }
+
     /// <inheritdoc/>
     public void Dispose()
     {
