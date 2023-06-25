@@ -79,7 +79,7 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
             scopes = new string[] { $"{uri.Scheme}://{uri.Host}/.default" };
         span?.SetTag("com.microsoft.kiota.authentication.scopes", string.Join(",", scopes));
 
-        var result = await this._credential.GetTokenAsync(new TokenRequestContext(scopes, claims: decodedClaim), cancellationToken);
+        var result = await this._credential.GetTokenAsync(new TokenRequestContext(scopes, claims: decodedClaim), cancellationToken).ConfigureAwait(false);
         return result.Token;
     }
 
