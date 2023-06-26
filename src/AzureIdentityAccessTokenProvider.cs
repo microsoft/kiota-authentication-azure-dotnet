@@ -18,6 +18,9 @@ namespace Microsoft.Kiota.Authentication.Azure;
 /// </summary>
 public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposable
 {
+    private static readonly object BoxedTrue = true;
+    private static readonly object BoxedFalse = false;
+
     private readonly TokenCredential _credential;
     private readonly ActivitySource _activitySource;
     private readonly HashSet<string> _scopes;
@@ -52,33 +55,37 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
     {
         using var span = _activitySource?.StartActivity(nameof(GetAuthorizationTokenAsync));
         if(!AllowedHostsValidator.IsUrlHostValid(uri)) {
-            span?.SetTag("com.microsoft.kiota.authentication.is_url_valid", false);
+            span?.SetTag("com.microsoft.kiota.authentication.is_url_valid", BoxedFalse);
             return string.Empty;
         }
 
         if(!uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase)) {
-            span?.SetTag("com.microsoft.kiota.authentication.is_url_valid", false);
+            span?.SetTag("com.microsoft.kiota.authentication.is_url_valid", BoxedFalse);
             throw new ArgumentException("Only https is supported");
         }
-
-        span?.SetTag("com.microsoft.kiota.authentication.is_url_valid", true);
+        span?.SetTag("com.microsoft.kiota.authentication.is_url_valid", BoxedTrue);
 
         string? decodedClaim = null;
         if (additionalAuthenticationContext is not null &&
                     additionalAuthenticationContext.ContainsKey(ClaimsKey) &&
                     additionalAuthenticationContext[ClaimsKey] is string claims) {
-            span?.SetTag("com.microsoft.kiota.authentication.additional_claims_provided", true);
+            span?.SetTag("com.microsoft.kiota.authentication.additional_claims_provided", BoxedTrue);
             var decodedBase64Bytes = Convert.FromBase64String(claims);
             decodedClaim = Encoding.UTF8.GetString(decodedBase64Bytes);
         } else
-            span?.SetTag("com.microsoft.kiota.authentication.additional_claims_provided", false);
+            span?.SetTag("com.microsoft.kiota.authentication.additional_claims_provided", BoxedFalse);
 
-        if(!_scopes.Any())
-            _scopes.Add($"{uri.Scheme}://{uri.Host}/.default");
-        span?.SetTag("com.microsoft.kiota.authentication.scopes", string.Join(",", _scopes));
-        var result = await this._credential.GetTokenAsync(new TokenRequestContext(_scopes.ToArray(), claims: decodedClaim), cancellationToken);
+        string[] scopes;
+        if (_scopes.Any()) {
+            scopes = _scopes.ToArray();
+        } else
+            scopes = new string[] { $"{uri.Scheme}://{uri.Host}/.default" };
+        span?.SetTag("com.microsoft.kiota.authentication.scopes", string.Join(",", scopes));
+
+        var result = await this._credential.GetTokenAsync(new TokenRequestContext(scopes, claims: decodedClaim), cancellationToken).ConfigureAwait(false);
         return result.Token;
     }
+
     /// <inheritdoc/>
     public void Dispose()
     {

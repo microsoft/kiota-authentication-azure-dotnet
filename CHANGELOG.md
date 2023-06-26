@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+## [1.0.3] - 2023-06-26
+
+### Changed
+
+- Fix unwanted scopes collection modification in AzureIdentityAccessTokenProvider ([#73]([https://github.com/microsoft/kiota-authentication-azure-dotnet/issues/93])).
+- Add missing ConfigureAwait(false) to GetTokenAsync call.
+- Replaced true/false values in SetTag method calls with pre-initialized values to prevent boxing.
+
 ## [1.0.2] - 2023-03-24
 
 ### Changed
