@@ -39,7 +39,7 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
     <PackageReference Include="Azure.Core" Version="1.34.0" />
     <PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.2.1" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="[6.0,8.0)" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="[6.0.1,8.0)" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
