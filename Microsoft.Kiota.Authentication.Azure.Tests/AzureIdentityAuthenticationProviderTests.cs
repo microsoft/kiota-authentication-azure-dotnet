@@ -85,7 +85,7 @@ public class AzureIdentityAuthenticationProviderTests
         var nonHttpsUrl = "http://graph.microsoft.com";
 
         // Assert
-        var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await azureIdentityAuthenticationProvider.GetAuthorizationTokenAsync(new Uri(nonHttpsUrl)));
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => azureIdentityAuthenticationProvider.GetAuthorizationTokenAsync(new Uri(nonHttpsUrl)));
         Assert.Equal("Only https is supported", exception.Message);
     }
     [Fact]
