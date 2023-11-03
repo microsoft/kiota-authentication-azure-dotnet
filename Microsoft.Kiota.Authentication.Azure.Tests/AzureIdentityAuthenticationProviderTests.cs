@@ -88,6 +88,23 @@ public class AzureIdentityAuthenticationProviderTests
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => azureIdentityAuthenticationProvider.GetAuthorizationTokenAsync(new Uri(nonHttpsUrl)));
         Assert.Equal("Only https is supported", exception.Message);
     }
+
+    [Theory]
+    [InlineData("http://localhost/test")]
+    [InlineData("http://localhost:8080/test")]
+    [InlineData("http://127.0.0.1:8080/test")]
+    [InlineData("http://127.0.0.1/test")]
+    public async Task GetAuthorizationTokenAsyncDoesNotThrowsExcpetionForNonHTTPsUrlIfLocalHost(string nonHttpsUrl)
+    {
+        // Arrange
+        var mockTokenCredential = new Mock<TokenCredential>();
+        mockTokenCredential.Setup(credential => credential.GetTokenAsync(It.IsAny<TokenRequestContext>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<AccessToken>(new AccessToken(string.Empty, DateTimeOffset.Now)));
+        var azureIdentityAuthenticationProvider = new AzureIdentityAccessTokenProvider(mockTokenCredential.Object);
+
+        // Assert
+        var token = await azureIdentityAuthenticationProvider.GetAuthorizationTokenAsync(new Uri(nonHttpsUrl));
+        Assert.Empty(token);
+    }
     [Fact]
     public async Task AddsClaimsToTheTokenContext()
     {
