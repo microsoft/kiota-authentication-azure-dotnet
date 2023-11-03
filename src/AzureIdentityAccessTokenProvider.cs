@@ -67,7 +67,7 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
             return string.Empty;
         }
 
-        if(!uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) && !_localHostStrings.Contains(uri.Host.TrimEnd(':'))) {
+        if(!uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) && !_localHostStrings.Contains(uri.Host)) {
             span?.SetTag("com.microsoft.kiota.authentication.is_url_valid", BoxedFalse);
             throw new ArgumentException("Only https is supported");
         }
