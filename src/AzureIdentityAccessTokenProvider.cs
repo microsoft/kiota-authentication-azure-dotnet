@@ -50,6 +50,14 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
 
     private const string ClaimsKey = "claims";
 
+    private readonly HashSet<string> _localHostStrings = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    {
+        "localhost",
+        "[::1]",
+        "::1",
+        "127.0.0.1"
+    };
+
     /// <inheritdoc/>
     public async Task<string> GetAuthorizationTokenAsync(Uri uri, Dictionary<string, object>? additionalAuthenticationContext = default, CancellationToken cancellationToken = default)
     {
@@ -59,7 +67,7 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
             return string.Empty;
         }
 
-        if(!uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase)) {
+        if(!uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) && !_localHostStrings.Contains(uri.Host.TrimEnd(':'))) {
             span?.SetTag("com.microsoft.kiota.authentication.is_url_valid", BoxedFalse);
             throw new ArgumentException("Only https is supported");
         }
