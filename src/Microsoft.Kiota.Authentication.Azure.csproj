@@ -14,7 +14,7 @@
     <PackageProjectUrl>https://aka.ms/kiota/docs</PackageProjectUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <Deterministic>true</Deterministic>
-    <VersionPrefix>1.1.1</VersionPrefix>
+    <VersionPrefix>1.1.2</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -33,6 +33,8 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NoWarn>$(NoWarn);NU5048;NETSDK1138</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFrameworkVersion)' == 'net5.0'">
     <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
@@ -40,7 +42,7 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
     <PackageReference Include="Azure.Core" Version="1.36.0" />
     <PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.7.2" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="[6.0.1,8.0)" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="[6.0.1,9.0)" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
