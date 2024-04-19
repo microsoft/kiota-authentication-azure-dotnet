@@ -30,7 +30,7 @@
       https://github.com/microsoft/kiota-authentication-azure-dotnet/releases
     </PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NoWarn>$(NoWarn);NU5048;NETSDK1138</NoWarn>
   </PropertyGroup>
@@ -53,10 +53,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
     <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
