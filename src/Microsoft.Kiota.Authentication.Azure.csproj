@@ -44,7 +44,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="Azure.Core" Version="1.38.0" />
+    <PackageReference Include="Azure.Core" Version="1.39.0" />
     <PackageReference Include="Microsoft.Kiota.Abstractions" Version="[1.9.1, 2.0.0)" />
   </ItemGroup>
 
