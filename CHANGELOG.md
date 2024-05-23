@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.6] - 2024-05-23
+
+### Changed
+
+- Fixed an issue where fixed versions of abstractions would result in restore failures. [microsoft/kiota-http-dotnet#256](https://github.com/microsoft/kiota-http-dotnet/issues/258)
+
 ## [1.1.5] - 2024-04-19
+
 - Have made System.Diagnostics.DiagnosticSource only be included on Net Standard's TFM & net 5 (https://github.com/microsoft/kiota-authentication-azure-dotnet/issues/191)
 
 ## [1.1.4] - 2024-02-26
