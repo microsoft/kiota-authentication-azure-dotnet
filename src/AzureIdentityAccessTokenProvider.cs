@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -84,13 +83,14 @@ public class AzureIdentityAccessTokenProvider : IAccessTokenProvider, IDisposabl
             span?.SetTag("com.microsoft.kiota.authentication.additional_claims_provided", BoxedFalse);
 
         string[] scopes;
-        if (_scopes.Any()) {
-            scopes = _scopes.ToArray();
+        if (_scopes.Count > 0) {
+            scopes = new string[_scopes.Count];
+            _scopes.CopyTo(scopes);
         } else
-            scopes = new string[] { $"{uri.Scheme}://{uri.Host}/.default" };
+            scopes = [ $"{uri.Scheme}://{uri.Host}/.default" ];
         span?.SetTag("com.microsoft.kiota.authentication.scopes", string.Join(",", scopes));
 
-        var result = await this._credential.GetTokenAsync(new TokenRequestContext(scopes, claims: decodedClaim), cancellationToken).ConfigureAwait(false);
+        var result = await _credential.GetTokenAsync(new TokenRequestContext(scopes, claims: decodedClaim), cancellationToken).ConfigureAwait(false);
         return result.Token;
     }
 
