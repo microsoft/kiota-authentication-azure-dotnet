@@ -51,12 +51,12 @@ Catch {
         Write-Host "No package exists. You will probably be publishing $packageName for the first time."
         Exit # exit gracefully
     }
-    
+
     Write-Host $_
     Exit 1
 }
 
-$currentPublishedVersion = [System.Management.Automation.SemanticVersion]$nugetIndex.items[0].upper
+$currentPublishedVersion = $nugetIndex.items | Select-Object -ExpandProperty upper | ForEach-Object { [System.Management.Automation.SemanticVersion]$_ } | sort-object | Select-Object -Last 1
 
 # Validate that the version number has been updated.
 if ($currentProjectVersion -le $currentPublishedVersion) {
